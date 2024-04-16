@@ -91,6 +91,6 @@ bool isValid(const AvailabilityMatrix& avail, size_t maxShifts, const DailySched
         }
     }
 
-    if (!avail[dayIndex][worker] || shiftsWorking[worker] > maxShifts) return false;
+    if (!avail[dayIndex][worker] || shiftsWorking[worker] > (int) maxShifts) return false;
     return true;
 }
