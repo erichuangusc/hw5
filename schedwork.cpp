@@ -22,10 +22,10 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 // Add prototypes for any helper functions here
 bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t maxShifts, 
-                 DailySchedule& sched, vector<int>& shiftsWorking, int dayIndex, int shiftIndex);
+                DailySchedule& sched, vector<int>& shiftsWorking, int dayIndex, int shiftIndex);
 
-bool isValid(const AvailabilityMatrix& avail, size_t maxShifts, const DailySchedule& sched, 
-             const vector<int>& shiftsWorking, int dayIndex, int shiftIndex);
+bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, 
+                vector<int>& shiftsWorking, int row, int col);
 
 void printSched(const DailySchedule& sched);
 
@@ -81,16 +81,14 @@ bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t ma
     return false;
 }
 
-bool isValid(const AvailabilityMatrix& avail, size_t maxShifts, const DailySchedule& sched, 
-             const vector<int>& shiftsWorking, int dayIndex, int shiftIndex) {
-    Worker_T worker = sched[dayIndex][shiftIndex];
+bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, vector<int>& shiftsWorking, int row, int col) {
+		Worker_T worker = sched[row][col];
+		vector<Worker_T> day = sched[row];
 
-    for (int i = 0; i < shiftIndex; ++i) {
-        if (sched[dayIndex][i] == worker) {
-            return false;
-        }
-    }
+		day.erase(day.begin() + col);
+		vector<Worker_T>::iterator it = find(day.begin(), day.end(), worker);
 
-    if (!avail[dayIndex][worker] || shiftsWorking[worker] > (int) maxShifts) return false;
-    return true;
+		if (it != day.end()|| !avail[row][worker] || shiftsWorking[worker] > (int)maxShifts) return false;
+
+		return true;
 }
