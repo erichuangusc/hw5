@@ -27,6 +27,8 @@ bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t ma
 bool isValid(const AvailabilityMatrix& avail, size_t maxShifts, const DailySchedule& sched, 
              const vector<int>& shiftsWorking, int dayIndex, int shiftIndex);
 
+void printSched(const DailySchedule& sched);
+
 // Add your implementation of schedule() and other helper functions here
 
 bool schedule(
