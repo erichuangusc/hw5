@@ -38,7 +38,7 @@ bool schedule(
     DailySchedule& sched
 )
 {
-    if(avail.size() == 0){
+    if(avail.size() == 0U){
         return false;
     }
     sched.clear();
