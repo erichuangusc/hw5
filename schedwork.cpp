@@ -22,10 +22,10 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 // Add prototypes for any helper functions here
 bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts, 
-                DailySchedule& sched, vector<int>& shiftsWorking, int row, int col);
+                DailySchedule& sched, vector<int>& shifts, int row, int col);
 
 bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, 
-                vector<int>& shiftsWorking, int row, int col);
+                vector<int>& shifts, int row, int col);
 
 void printSched(const DailySchedule& sched);
 
@@ -55,34 +55,34 @@ bool schedule(
 }
 
 // bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t maxShifts, 
-//                  DailySchedule& sched, vector<int>& shiftsWorking, int dayIndex, int shiftIndex) {
+//                  DailySchedule& sched, vector<int>& shifts, int dayIndex, int shiftIndex) {
 //     if (dayIndex == avail.size()) {
 //         return true;
 //     }
 
 //     if (shiftIndex == dailyNeed) {
-//         return scheduleHelper(avail, dailyNeed, maxShifts, sched, shiftsWorking, dayIndex + 1, 0);
+//         return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, dayIndex + 1, 0);
 //     }
 
 //     for (Worker_T worker = 0; worker < avail[dayIndex].size(); ++worker) {
 //         sched[dayIndex][shiftIndex] = worker;
-//         shiftsWorking[worker]++;
+//         shifts[worker]++;
 
-//         if (isValid(avail, maxShifts, sched, shiftsWorking, dayIndex, shiftIndex)) {
-//             if (scheduleHelper(avail, dailyNeed, maxShifts, sched, shiftsWorking, dayIndex, shiftIndex + 1)) {
+//         if (isValid(avail, maxShifts, sched, shifts, dayIndex, shiftIndex)) {
+//             if (scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, dayIndex, shiftIndex + 1)) {
 //                 return true;
 //             }
 //         }
 
 //         sched[dayIndex][shiftIndex] = INVALID_ID;
-//         shiftsWorking[worker]--;
+//         shifts[worker]--;
 //     }
 
 //     return false;
 // }
 
 bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts, 
-                DailySchedule& sched, vector<int>& shiftsWorking, int row, int col) {
+                DailySchedule& sched, vector<int>& shifts, int row, int col) {
 		if(row == (int)avail.size()) return true;
 
 		int next_row = row, next_col = col+1;
@@ -93,18 +93,18 @@ bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts
 
 		for (Worker_T worker = 0; worker < avail[0].size(); worker++) {
 				sched[row][col] = worker;
-				shiftsWorking[worker] += 1;
+				shifts[worker] += 1;
 
-				if (isValid(avail, maxShifts, sched, shiftsWorking, row, col)) {
-						if (scheduleHelper(avail, dailyNeed, maxShifts, sched, shiftsWorking, next_row, next_col)) return true;
+				if (isValid(avail, maxShifts, sched, shifts, row, col)) {
+						if (scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, next_row, next_col)) return true;
 						else {
 								sched[row][col] = INVALID_ID;
-								shiftsWorking[worker]--;
+								shifts[worker]--;
 						}
 				}
 				else {
 						sched[row][col] = INVALID_ID;
-						shiftsWorking[worker]--;
+						shifts[worker]--;
 				}
 		}
 
@@ -112,14 +112,14 @@ bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts
 }
 
 
-bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, vector<int>& shiftsWorking, int row, int col) {
+bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, vector<int>& shifts, int row, int col) {
 		Worker_T worker = sched[row][col];
 		vector<Worker_T> day = sched[row];
 
 		day.erase(day.begin() + col);
 		vector<Worker_T>::iterator it = find(day.begin(), day.end(), worker);
 
-		if (it != day.end()|| !avail[row][worker] || shiftsWorking[worker] > (int)maxShifts) return false;
+		if (it != day.end()|| !avail[row][worker] || shifts[worker] > (int)maxShifts) return false;
 
 		return true;
 }
