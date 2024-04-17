@@ -21,8 +21,8 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t maxShifts, 
-                DailySchedule& sched, vector<int>& shiftsWorking, int dayIndex, int shiftIndex);
+bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts, 
+                DailySchedule& sched, vector<int>& shiftsWorking, int row, int col);
 
 bool isValid(AvailabilityMatrix avail, size_t maxShifts, DailySchedule& sched, 
                 vector<int>& shiftsWorking, int row, int col);
@@ -81,8 +81,8 @@ bool schedule(
 //     return false;
 // }
 
-bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t maxShifts, 
-                 DailySchedule& sched, vector<int>& shiftsWorking, int dayIndex, int shiftIndex) {
+bool scheduleHelper(AvailabilityMatrix avail, size_t dailyNeed, size_t maxShifts, 
+                DailySchedule& sched, vector<int>& shiftsWorking, int row, int col) {
 		if(row == (int)avail.size()) return true;
 
 		int next_row = row, next_col = col+1;
@@ -96,7 +96,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, size_t dailyNeed, size_t ma
 				shiftsWorking[worker] += 1;
 
 				if (isValid(avail, maxShifts, sched, shiftsWorking, row, col)) {
-						if (schedHelper(avail, dailyNeed, maxShifts, sched, shiftsWorking, next_row, next_col)) return true;
+						if (scheduleHelper(avail, dailyNeed, maxShifts, sched, shiftsWorking, next_row, next_col)) return true;
 						else {
 								sched[row][col] = INVALID_ID;
 								shiftsWorking[worker]--;
